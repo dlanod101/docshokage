@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docshokage"
+version = "0.1.0"
+description = "Scan a project, extract relevant files, and send them to a hosted backend."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Donald Oliver Nsikhe", email = "dnsikhe@gmail.com"},
+]
+urls = {Homepage = "https://github.com/dlanod101/docshokage"}
+keywords = ["django", "api", "arise", "documentation", "scanner"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "requests>=2.31.0",
+]
+
+[project.scripts]
+docshokage = "docshokage.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["docshokage*"]
