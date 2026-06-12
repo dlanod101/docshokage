@@ -1,2 +1,0 @@
-[console_scripts]
-docshokage = docshokage.cli:main
