@@ -37,6 +37,17 @@ def _set_api_key(key: str) -> None:
     print(f"✅ API key saved to {CONFIG_FILE}")
 
 
+def _get_project_id() -> str | None:
+    return _load_config().get("project_id")
+
+
+def _set_project_id(pid: str) -> None:
+    cfg = _load_config()
+    cfg["project_id"] = pid
+    _save_config(cfg)
+    print(f"✅ Project ID saved to {CONFIG_FILE}")
+
+
 # ── Commands ────────────────────────────────────────────────────
 
 def cmd_set_key(api_key: str) -> None:
@@ -53,6 +64,15 @@ def cmd_arise(args: argparse.Namespace) -> None:
         )
         sys.exit(1)
 
+    project_id = args.project_id or _get_project_id()
+    if not project_id:
+        print(
+            "❌ No project ID configured.\n"
+            "   Run:  docshokage --set-project-id <your-project-id>\n"
+            "   or pass:  docshokage arise --project-id <your-project-id>"
+        )
+        sys.exit(1)
+
     print("=" * 50)
     print("  📄 docshokage arise")
     print("=" * 50)
@@ -64,7 +84,11 @@ def cmd_arise(args: argparse.Namespace) -> None:
     filter_files()
 
     # Step 3 – Send
-    send_to_backend(api_url=args.api_url, api_key=api_key)
+    send_to_backend(
+        api_url=args.api_url,
+        api_key=api_key,
+        project_id=project_id,
+    )
 
     print("\n✅ Done — arise sent to backend!\n")
 
@@ -82,6 +106,11 @@ def main() -> None:
         metavar="API_KEY",
         help="Save your API key so it can be used later.",
     )
+    parser.add_argument(
+        "--set-project-id",
+        metavar="PROJECT_ID",
+        help="Save your project ID so it can be used later.",
+    )
 
     subparsers = parser.add_subparsers(dest="command")
 
@@ -93,8 +122,12 @@ def main() -> None:
     )
     arise_parser.add_argument(
         "--api-url",
-        default="https://docshokage101.vercel.app",
+        default="https://docshokage-web.vercel.app",
         help="Backend URL to send data to.",
+    )
+    arise_parser.add_argument(
+        "--project-id",
+        help="Project ID to associate the documentation with (overrides saved value).",
     )
 
     args = parser.parse_args()
@@ -102,6 +135,10 @@ def main() -> None:
     # --kagi flag always takes precedence
     if args.kagi:
         cmd_set_key(args.kagi)
+        return
+
+    if args.set_project_id:
+        _set_project_id(args.set_project_id)
         return
 
     if args.command == "arise":

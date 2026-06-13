@@ -1,6 +1,5 @@
 """Send filtered file data to a hosted backend."""
 
-import json
 import re
 from pathlib import Path
 
@@ -9,11 +8,13 @@ import requests
 
 def send_to_backend(
     input_md: str = "filtered_files.md",
-    api_url: str = "https://docshokage101.vercel.app",
-    api_key: str = "docshokage101",
+    api_url: str = "https://docshokage-web.vercel.app",
+    api_key: str = "",
+    project_id: str = "",
+    title: str = "Untitled Documentation",
 ) -> dict:
     """Parse *input_md* into structured file entries and POST them to
-    the hosted backend at *api_url*.
+    the hosted backend at *api_url* using the ``/api/docs/with-key`` endpoint.
 
     Returns the JSON response from the server.
     """
@@ -40,17 +41,20 @@ def send_to_backend(
             "content": file_content,
         })
 
-    payload = {"files": files}
+    payload = {
+        "api_key": api_key,
+        "project_id": project_id,
+        "title": title,
+        "content": {"files": files},
+    }
 
-    print(f"Sending {len(files)} files to {api_url} ...")
+    url = f"{api_url.rstrip('/')}/api/docs/with-key"
+    print(f"Sending {len(files)} files to {url} ...")
 
     resp = requests.post(
-        f"{api_url.rstrip('/')}/api/docs",
+        url,
         json=payload,
-        headers={
-            "Content-Type": "application/json",
-            "X-API-Key": api_key,
-        },
+        headers={"Content-Type": "application/json"},
         timeout=60,
     )
     resp.raise_for_status()
