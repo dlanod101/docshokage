@@ -117,8 +117,8 @@ def main() -> None:
     arise_parser = subparsers.add_parser("arise", help="Run the full extraction pipeline.")
     arise_parser.add_argument(
         "--input-dir",
-        default=r"C:\Users\user\Desktop\Dev\backend-alpharking-website",
-        help="Project directory to scan (default: backend-alpharking-website).",
+        default=".",
+        help="Project directory to scan (default: current directory).",
     )
     arise_parser.add_argument(
         "--api-url",

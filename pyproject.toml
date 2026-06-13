@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "docshokage"
-version = "0.1.0"
+version = "0.1.1"
 description = "Scan a project, extract relevant files, and send them to a hosted backend."
 readme = "README.md"
 requires-python = ">=3.10"
